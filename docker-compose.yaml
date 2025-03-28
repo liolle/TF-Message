@@ -1,4 +1,4 @@
-name: exo4
+name: exo5
 services:
   readdb:
     build:
