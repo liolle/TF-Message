@@ -52,6 +52,20 @@ services:
     volumes:
       - ./shared:/shared
 
+  replicaworker:
+    build:
+      context: ./
+      dockerfile: ReplicaWorker.Dockerfile
+      args:
+        INVALIDATE_CACHE: "${INVALIDATE_CACHE}"
+    container_name: replicaworker
+    env_file: 
+      - config.env
+    networks:
+      - read 
+    volumes:
+      - ./shared:/shared
+
 networks:
   read:
   write: 
