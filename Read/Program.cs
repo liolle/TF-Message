@@ -1,5 +1,6 @@
 using DotNetEnv;
 using TFMessage.database;
+using TFMessage.read.service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton(new ReadDataContext(builder.Configuration));
+builder.Services.AddSingleton<ReadDataContext>(new ReadDataContext(builder.Configuration["DB_READ_CONNECTION_STRING"]));
+builder.Services.AddScoped<IReadService,ReadService>();
 
 var app = builder.Build();
 

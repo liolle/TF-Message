@@ -1,0 +1,57 @@
+name: exo4
+services:
+  readdb:
+    build:
+      context: ./DB/Read
+    container_name: readdb
+    env_file: 
+      - config.env
+    volumes:
+      - ./read-data:/var/opt/mssql 
+    networks:
+        - read
+
+  writedb:
+    build:
+      context: ./DB/Write
+    container_name: writedb
+    env_file: 
+      - config.env
+    volumes:
+      - ./write-data:/var/opt/mssql 
+    networks:
+      - write
+  
+  readapi:
+    build:
+      context: ./
+      dockerfile: Read.Dockerfile
+      args:
+        INVALIDATE_CACHE: "${INVALIDATE_CACHE}"
+    container_name: readapi
+    env_file: 
+      - config.env
+    ports:
+      - 3535:8080
+    networks:
+        - read
+
+  writeapi:
+    build:
+      context: ./
+      dockerfile: Write.Dockerfile
+      args:
+        INVALIDATE_CACHE: "${INVALIDATE_CACHE}"
+    container_name: writeapi
+    env_file: 
+      - config.env
+    ports:
+      - 3536:8080
+    networks:
+      - write 
+    volumes:
+      - ./shared:/shared
+
+networks:
+  read:
+  write: 

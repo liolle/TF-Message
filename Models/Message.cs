@@ -2,27 +2,37 @@ namespace TFMessage.models;
 using System.ComponentModel.DataAnnotations;
 
 public class Message {
-  public Message(int id, int name, int content)
+  public Message(string id, string author, string content)
   {
     Id = id;
-    Name = name;
+    Author = author;
     Content = content;
   }
 
-  public int Id {get;}
-  public int Name {get;}
-  public int Content {get;}
+  public string Id {get;}
+  public string Author {get;}
+  public string Content {get;}
+
+  public override string ToString()
+  {
+    return $"{Id},{Author},{Content}";
+  }
 }
 
 public class MessageDTO {
-  public MessageDTO(string name, string content)
+  public MessageDTO(string author, string content)
   {
-    Name = name;
+    Author = author;
     Content = content;
   }
 
   [Required]
-  public string Name {get;set;}
+  public string Author {get;set;}
   [Required]
   public string Content {get;set;}
+
+  public Message GetMessage(){
+    string id = Guid.NewGuid().ToString(); 
+    return new Message(id,Author,Content); 
+  }
 }

@@ -1,6 +1,5 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 namespace TFMessage.database;
 
 public interface IDataContext 
@@ -14,6 +13,7 @@ public abstract class DataContext(string connectionString) : IDataContext
 
     public SqlConnection CreateConnection()
     {
+      Console.WriteLine(_connectionString);
         return new SqlConnection(_connectionString);
     }
 
@@ -40,28 +40,25 @@ public abstract class DataContext(string connectionString) : IDataContext
     }
 }
 
-public class ReadDataContext(IConfiguration configuration) : DataContext(GetConnectionString(configuration, "DB_READ_CONNECTION_STRING"))
+public class ReadDataContext(string? connectionString) : DataContext(GetConnectionString(connectionString))
 {
-    private static string GetConnectionString(IConfiguration config, string configKey)
+  private static string GetConnectionString(string? connectionString)
+  {
+    if (string.IsNullOrWhiteSpace(connectionString))
     {
-        string? connectionString = config[configKey];
-        if (string.IsNullOrWhiteSpace(connectionString))
-        {
-            throw new Exception($"Missing configuration: {configKey}");
-        }
-        return connectionString;
+      throw new Exception($"Missing configuration: DB_READ_CONNECTION_STRING");
     }
+    return connectionString;
+  }
 }
 
-public class WriteDataContext(IConfiguration configuration) : DataContext(GetConnectionString(configuration, "DB_WRITE_CONNECTION_STRING"))
-{
-    private static string GetConnectionString(IConfiguration config, string configKey)
+public class WriteDataContext(string? connectionString) : DataContext(GetConnectionString(connectionString)){
+  private static string GetConnectionString(string? connectionString)
+  {
+    if (string.IsNullOrWhiteSpace(connectionString))
     {
-        string? connectionString = config[configKey];
-        if (string.IsNullOrWhiteSpace(connectionString))
-        {
-            throw new Exception($"Missing configuration: {configKey}");
-        }
-        return connectionString;
+      throw new Exception($"Missing configuration: DB_WRITE_CONNECTION_STRING");
     }
+    return connectionString;
+  }
 }
